@@ -8,32 +8,33 @@ from urllib.parse import urljoin
 
 
 
+'''
+Step 3 - method 2 : scrapping all products from a multi-page
+category by getting next pages via while loop that iterates
+as long as there is a next button on the page.
+'''
 page_content=[]
 links=[]
+url="http://books.toscrape.com/catalogue/category/books/fiction_10/index.html"
 
-
-'''
-Step 3 : Scrapping all the requested product details from a multipage category.
-This method handle the pagination with a for loop which iterates from page 
-1 to 10 as long as the http reponse is 200
-'''
-for i in range(1,10):
-    url="http://books.toscrape.com/catalogue/category/books/fiction_10/"+"page-"+str(i)+".html"
+while True :
     r= requests.get(url,headers={'User-Agent': 'Mozilla/5.0'})
-    
-    #if http response is not egal to 200. the script stop trying to load new pages. 
-       
-    if r.status_code == 200:
-                
-        soup = BeautifulSoup(r.content,'lxml') 
-        content = soup.find('ol',class_="row")
-        page_links = content.find_all('li')
-        for page_link in page_links:
-            ahref = page_link.find('a')['href'].replace('../../../','')
-            links.append('http://books.toscrape.com/catalogue/'+ ahref)
+    soup = BeautifulSoup(r.content,'lxml') 
+    content = soup.find('ol',class_="row")
+    page_links = content.find_all('li')
+    for page_link in page_links:
+        ahref = page_link.find('a')['href'].replace('../../../','')
+        links.append(urljoin('http://books.toscrape.com/catalogue/',ahref))
+    '''
+    # this condition check if there's a next button and construct
+    the absolute url of the next page as long as there is one.    
+    '''
+    nextpage = soup.find('li',class_='next')    
+    if nextpage:
+        url=urljoin("http://books.toscrape.com/catalogue/category/books/fiction_10/",nextpage.find('a')['href'].strip())
+    else:
+        break
 
-      
-          
 for productlink in links:
     data=[]
     domain = "http://books.toscrape.com/"
@@ -86,7 +87,7 @@ for productlink in links:
 print(len(page_content))
 df=pd.DataFrame(page_content)   
 print(df.head())
-df.to_csv("downloads/step3/HttpMethodSingleProductCategorySrapping.csv")
+df.to_csv("downloads/step3/WhileLoopMethodSingleProductCategorySrapping.csv")
 
 
 
