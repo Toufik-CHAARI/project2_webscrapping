@@ -3,14 +3,17 @@ import pandas as pd
 import requests
 import time
 from urllib.parse import urljoin
+import os
+import re
 
 
 
 
 
 '''
-Step 4 -  : scrapping and saving all products from all the 
-website categories in a separate csv file for each category.
+Step 4 and 5 -  : scrapping and saving all products from all the 
+website categories in a separate csv file for each category as well
+as all the product images.
 '''
 
 
@@ -67,6 +70,16 @@ def scrape_category_products(category_url, catename):
         soup = BeautifulSoup(r.content,'lxml')
         #construction of the absolute url by concatenation with urljoin
         image_url = urljoin(domain,soup.find('img')['src'])
+        alt= soup.find('img')['alt']
+        alt=re.sub(r'\(.*?\)','',alt)
+        #regex which remove any text within parentheses
+        directory = "downloads/images/"
+        os.makedirs(directory, exist_ok=True)
+        #create the folder if it doesn't exist
+        filepath = os.path.join(directory,alt.replace('/','').replace('/', '').replace(' ','_').strip() + '.png')
+        with open(filepath,'wb') as f:
+            image=requests.get(image_url)
+            f.write(image.content)
         category = soup.find_all('li')[2].text.strip()
         product_description = soup.find_all('p')[3].text.strip()
         product_page_url = productlink
@@ -118,7 +131,7 @@ for category_url, catename in zip(url1, cat):
 # Write data to a separate CSV file for each category
 for category, data in data_per_category.items():
     df = pd.DataFrame(data)
-    df.to_csv(f"downloads/categories/{category}_ProductCategoriesScraping.csv")
+    df.to_csv(f"downloads/step4_et_5/{category}_ProductCategoriesScraping.csv")
 
 
 
