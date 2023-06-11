@@ -41,9 +41,9 @@ for category in categories:
         '''
 
 def scrape_category_products(category_url, catename):
-    links=[]
+    links =[]
     while True :
-        r= requests.get(category_url,headers={'User-Agent': 'Mozilla/5.0'})
+        r = requests.get(category_url,headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(r.content,'lxml') 
         content = soup.find('ol',class_="row")
         if content is None:
@@ -64,21 +64,21 @@ def scrape_category_products(category_url, catename):
             break
 
     for productlink in links:
-        data=[]
+        data = []
         domain = "http://books.toscrape.com/"
         r = requests.get(productlink,headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(r.content,'lxml')
         #construction of the absolute url by concatenation with urljoin
         image_url = urljoin(domain,soup.find('img')['src'])
-        alt= soup.find('img')['alt']
-        alt=re.sub(r'\(.*?\)','',alt)
+        alt = soup.find('img')['alt']
+        alt = re.sub(r'\(.*?\)','',alt)
         #regex which remove any text within parentheses
         directory = "downloads/images/"
         os.makedirs(directory, exist_ok=True)
         #create the folder if it doesn't exist
         filepath = os.path.join(directory,alt.replace('/','').replace('/', '').replace(' ','_').strip() + '.png')
         with open(filepath,'wb') as f:
-            image=requests.get(image_url)
+            image = requests.get(image_url)
             f.write(image.content)
         category = soup.find_all('li')[2].text.strip()
         product_description = soup.find_all('p')[3].text.strip()
@@ -101,7 +101,7 @@ def scrape_category_products(category_url, catename):
         for x in table.find_all('tr'):
             for y in x.find_all('td'):
                 data.append(y.text)        
-        universal_product_code= data[0].strip()    
+        universal_product_code = data[0].strip()    
         #convert prices to float for future price analysis
         price_excluding_tax = float(data[2].strip().replace('£',''))
         price_including_tax = float(data[3].strip().replace('£',''))
