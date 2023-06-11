@@ -28,9 +28,9 @@
 ### -Clone the project by running the following command
 'git clone https://github.com/Toufik-CHAARI/project2_webscrapping.git'
 
-### -Create a folder named "dowloads"
+### -Create a folder named "downloads"
 
-### -Inside this folder create 4 folders with the following names:
+### -Inside the "downloads" folder create 4 folders with the following names:
 
 1. step2
 2. step3
