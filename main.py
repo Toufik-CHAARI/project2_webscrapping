@@ -39,10 +39,13 @@ for category in categories:
         where category name is key and the list the value 
         We Initialize data_per_category[catename] as an empty list here 
         '''
+print('list of category page with empty list : ', data_per_category)
+
 
 def scrape_category_products(category_url, catename):
     links =[]
     while True :
+        print('list of category pages :',category_url)
         r = requests.get(category_url,headers={'User-Agent': 'Mozilla/5.0'})
         soup = BeautifulSoup(r.content,'lxml') 
         content = soup.find('ol',class_="row")
@@ -80,6 +83,7 @@ def scrape_category_products(category_url, catename):
         with open(filepath,'wb') as f:
             image = requests.get(image_url)
             f.write(image.content)
+        print(alt,' : is saved ')
         category = soup.find_all('li')[2].text.strip()
         product_description = soup.find_all('p')[3].text.strip()
         product_page_url = productlink
@@ -132,6 +136,6 @@ for category_url, catename in zip(url1, cat):
 for category, data in data_per_category.items():
     df = pd.DataFrame(data)
     df.to_csv(f"downloads/step4_et_5/{category}_ProductCategoriesScraping.csv")
-
+    print(category, 'csv file is saved')
 
 
