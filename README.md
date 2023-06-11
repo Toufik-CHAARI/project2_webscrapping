@@ -34,8 +34,7 @@
 
 1. step2
 2. step3
-3. step4
-4. step4_et_5
+3. step4_et_5
 
 ### -Install the project dependencies 
 
