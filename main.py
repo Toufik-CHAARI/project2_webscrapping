@@ -131,7 +131,7 @@ for category_url, catename in zip(url1, cat):
     #allow to iterate within the tuple(url1, cat)
     scrape_category_products(category_url, catename)          
 
-    
+   
 # Write data to a separate CSV file for each category
 for category, data in data_per_category.items():
     df = pd.DataFrame(data)
